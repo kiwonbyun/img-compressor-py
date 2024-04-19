@@ -58,7 +58,8 @@ class ImageCompressorApp:
             messagebox.showwarning("Warning", "Please select a folder first!")
             return
         # 작업 시작 메시지 업데이트
-        self.status_label.config(text="압축중입니다. 잠시만 기다려주세요", fg='yellow')
+        self.status_label.config(text="압축중입니다. 잠시만 기다려주세요", fg='white') 
+        self.master.update()
 
         if not os.path.exists(self.output_directory):
             os.makedirs(self.output_directory)
@@ -76,7 +77,7 @@ class ImageCompressorApp:
                     img = img.resize(new_size, Image.Resampling.LANCZOS)
                     output_path = os.path.join(self.output_directory, filename)
                     img.save(output_path, 'JPEG', quality=quality)
-            self.status_label.config(text="압축이 완료되었습니다!🎉")
+            self.status_label.config(text="압축이 완료되었습니다!🎉", fg='yellow')
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
             self.status_label.config(text="An error occurred!")
