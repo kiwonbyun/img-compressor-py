@@ -1,4 +1,9 @@
+# 이미지 압축 프로그램
+
+#### Python 설치 필요
+
 1. Repository Clone
+
 2. pyinstaller 설치
 
 - 터미널 : pip install pyinstaller
