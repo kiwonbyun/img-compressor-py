@@ -53,12 +53,41 @@ class ImageCompressorApp:
         else:
             messagebox.showwarning("Warning", "No folder selected!")
 
+    # def compress_images(self):
+    #     if not self.input_directory or not self.output_directory:
+    #         messagebox.showwarning("Warning", "Please select a folder first!")
+    #         return
+    #     # 작업 시작 메시지 업데이트
+    #     self.status_label.config(text="압축중입니다. 잠시만 기다려주세요", fg='white') 
+    #     self.master.update()
+
+    #     if not os.path.exists(self.output_directory):
+    #         os.makedirs(self.output_directory)
+
+    #     scale_factor = self.scale_slider.get() / 100.0
+    #     quality = self.quality_slider.get()
+
+    #     try:
+    #         for filename in os.listdir(self.input_directory):
+    #             if filename.lower().endswith('.jpg'):
+    #                 file_path = os.path.join(self.input_directory, filename)
+    #                 img = Image.open(file_path)
+    #                 original_size = img.size
+    #                 new_size = (int(original_size[0] * scale_factor), int(original_size[1] * scale_factor))
+    #                 img = img.resize(new_size, Image.Resampling.LANCZOS)
+    #                 output_path = os.path.join(self.output_directory, filename)
+    #                 img.save(output_path, 'JPEG', quality=quality)
+    #         self.status_label.config(text="압축이 완료되었습니다!🎉", fg='yellow')
+    #     except Exception as e:
+    #         messagebox.showerror("Error", f"An error occurred: {str(e)}")
+    #         self.status_label.config(text="An error occurred!")
+
     def compress_images(self):
         if not self.input_directory or not self.output_directory:
             messagebox.showwarning("Warning", "Please select a folder first!")
             return
-        # 작업 시작 메시지 업데이트
-        self.status_label.config(text="압축중입니다. 잠시만 기다려주세요", fg='white') 
+
+        self.status_label.config(text="압축중입니다. 잠시만 기다려주세요", fg='white')
         self.master.update()
 
         if not os.path.exists(self.output_directory):
@@ -66,21 +95,36 @@ class ImageCompressorApp:
 
         scale_factor = self.scale_slider.get() / 100.0
         quality = self.quality_slider.get()
+        supported_extensions = ['.jpeg', '.jpg', '.png', '.gif', '.bmp', '.webp']
 
         try:
             for filename in os.listdir(self.input_directory):
-                if filename.lower().endswith('.jpg'):
+                ext = os.path.splitext(filename)[1].lower()  # 파일 확장자 추출
+                if ext in supported_extensions:
                     file_path = os.path.join(self.input_directory, filename)
                     img = Image.open(file_path)
                     original_size = img.size
                     new_size = (int(original_size[0] * scale_factor), int(original_size[1] * scale_factor))
                     img = img.resize(new_size, Image.Resampling.LANCZOS)
                     output_path = os.path.join(self.output_directory, filename)
-                    img.save(output_path, 'JPEG', quality=quality)
+                    
+                    # 확장자별 저장 옵션 설정
+                    if ext in ['.jpeg', '.jpg']:
+                        img.save(output_path, 'JPEG', quality=quality)
+                    elif ext == '.png':
+                        img.save(output_path, 'PNG', compression_level=9)
+                    elif ext == '.gif':
+                        img.save(output_path, 'GIF')
+                    elif ext == '.bmp':
+                        img.save(output_path, 'BMP')
+                    elif ext == '.webp':
+                        img.save(output_path, 'WEBP', quality=quality, lossless=False)
+
             self.status_label.config(text="압축이 완료되었습니다!🎉", fg='yellow')
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
-            self.status_label.config(text="An error occurred!")
+            self.status_label.config(text="An error occurred!", fg='red')
+
 
 if __name__ == "__main__":
     root = tk.Tk()
